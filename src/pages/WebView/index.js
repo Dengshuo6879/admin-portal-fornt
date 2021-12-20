@@ -1,15 +1,12 @@
 import React from 'react';
 import { Link } from 'umi';
 
-
-const accessToken = '我是accessToken'
-
 export default class WebView extends React.Component {
     state = {
         srcInfo: {
-            '/dataset/': `http://192.168.1.40:8004/autoai-admin-front/dataSet/?accessToken=${accessToken}`,
-            '/model/': `http://192.168.1.40:8004/autoai-admin-front/model/?accessToken=${accessToken}`,
-            '/device/': `http://192.168.1.40:8004/autoai-admin-front/device/?accessToken=${accessToken}`
+            '/dataset/': `http://192.168.1.40:8004/autoai-admin-front/dataSet/`,
+            '/model/': `http://192.168.1.40:8004/autoai-admin-front/model/`,
+            '/device/': `http://192.168.1.40:8004/autoai-admin-front/device/`
         },
 
         targetInfo: {
@@ -40,8 +37,13 @@ export default class WebView extends React.Component {
             if (event !== undefined) {
                 const receivedData = event.data
                 const { type } = receivedData
-                if (type == 'open_new_window') {
-                    this.handleOpenNewWindow(receivedData)
+                switch (type) {
+                    case 'open_new_window':
+                        this.handleOpenNewWindow(receivedData)
+                        break;
+
+                    default:
+                        break;
                 }
             }
         }
@@ -52,7 +54,7 @@ export default class WebView extends React.Component {
         const { params } = receivedData
         const targetInfo = {
             pathname: '/device/',
-            url: 'http://192.168.1.20:8004/autoai-admin-front/device/monitor/' + `${params ? encodeURI(JSON.stringify(params)) : ''} `,
+            url: 'http://192.168.1.20:8004/autoai-admin-front/device/monitor/' + `${params ? '?' + encodeURI(JSON.stringify(params)) : ''} `,
         }
         sessionStorage.setItem('targetInfo', encodeURI(JSON.stringify(targetInfo)))
         document.getElementById('link').click()

@@ -47,6 +47,9 @@ const Login = () => {
 
       if (msg.status === 'ok') {
         message.success('登录成功！');
+
+        localStorage.setItem('accessToken', '我是accessToken')
+
         await fetchUserInfo();
         /** 此方法会跳转到 redirect 参数所在的位置 */
 
