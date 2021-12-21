@@ -57,7 +57,8 @@ export default class WebView extends React.Component {
             url: 'http://192.168.1.20:8004/autoai-admin-front/device/monitor/' + `${params ? '?' + encodeURI(JSON.stringify(params)) : ''} `,
         }
         sessionStorage.setItem('targetInfo', encodeURI(JSON.stringify(targetInfo)))
-        document.getElementById('link').click()
+
+        this.link.click()
     }
 
     componentWillUnmount() {
@@ -67,9 +68,11 @@ export default class WebView extends React.Component {
     render() {
         const { targetInfo } = this.state
         const { pathname, url } = targetInfo
+        const staffInfo = window.btoa(localStorage.getItem('staffInfo') || '')
 
         return <div style={{ height: 'calc(100vh - 48px)' }}>
             <iframe
+                name={staffInfo}
                 src={url}
                 frameBorder='0'
                 width='100%'
@@ -77,7 +80,7 @@ export default class WebView extends React.Component {
                 scrolling={'auto'}
             ></iframe>
 
-            <Link to={{ pathname: pathname }} target='_blank' id={'link'}></Link>
+            <Link to={{ pathname: pathname }} target='_blank' ref={ref => this.link = ref}></Link>
         </div>
     }
 }
