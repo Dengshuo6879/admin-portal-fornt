@@ -25,7 +25,23 @@ export default [
       {
         path: '/setting/systemMgmt',
         name: '系统管理',
-        component: './SystemMgmt',
+        routes: [
+          {
+            path: '/setting/systemMgmt/menuMgmt',
+            name: '菜单管理',
+            component: './SystemMgmt',
+          },
+          {
+            path: '/setting/systemMgmt/staffMgmt',
+            name: '成员管理',
+            component: './SystemMgmt/StaffMgmt',
+          },
+          {
+            path: '/setting/systemMgmt/roleMgmt',
+            name: '角色管理',
+            component: './SystemMgmt/RoleMgmt',
+          },
+        ],
       },
       {
         path: '/setting/logMgmt',
@@ -35,11 +51,22 @@ export default [
       {
         path: '/setting/accountMgmt',
         name: '帐号管理',
-        component: './SystemMgmt',
+        routes: [
+          {
+            path: '/setting/accountMgmt/modify',
+            name: '修改资料',
+            component: './SystemMgmt',
+          },
+          {
+            path: '/setting/accountMgmt/modifyPwd',
+            name: '修改密码',
+            component: './SystemMgmt',
+          },
+        ],
       },
       {
         component: './404',
       },
     ],
-  }
+  },
 ];

@@ -43,18 +43,18 @@ const Login = () => {
   const handleSubmit = async (values) => {
     try {
       // 登录
-      const msg = await login({ ...values, type });
+      // const msg = await login({ ...values, type });
 
-      if (msg.status === 'ok') {
+      if (true) {
         message.success('登录成功！');
 
         const staffInfo = {
-          "staffUUID": "c71c88d8-9066-4408-9135-a714c284335d",
-          "staffLoginName": "ds",
-          "staffRealName": "dengshuo",
-          "accessToken": "c71c88d8-9066-4408-9135-a714c28477d"
-        }
-        localStorage.setItem('staffInfo', JSON.stringify(staffInfo))
+          staffUUID: 'c71c88d8-9066-4408-9135-a714c284335d',
+          staffLoginName: 'ds',
+          staffRealName: 'dengshuo',
+          accessToken: 'c71c88d8-9066-4408-9135-a714c28477d',
+        };
+        localStorage.setItem('staffInfo', JSON.stringify(staffInfo));
 
         await fetchUserInfo();
         /** 此方法会跳转到 redirect 参数所在的位置 */
@@ -93,16 +93,11 @@ const Login = () => {
           }}
         >
           <Tabs activeKey={type} onChange={setType}>
-            <Tabs.TabPane
-              key="account"
-              tab={'账户密码登录'}
-            />
+            <Tabs.TabPane key="account" tab={'账户密码登录'} />
           </Tabs>
 
           {status === 'error' && loginType === 'account' && (
-            <LoginMessage
-              content={'账户或密码错误(admin/ant.design)'}
-            />
+            <LoginMessage content={'账户或密码错误(admin/ant.design)'} />
           )}
           {type === 'account' && (
             <>
