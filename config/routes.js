@@ -32,14 +32,30 @@ export default [
             component: './SystemMgmt',
           },
           {
-            path: '/setting/systemMgmt/staffMgmt',
+            path: '/setting/systemMgmt/staffMgmt/',
             name: '成员管理',
-            component: './SystemMgmt/StaffMgmt',
+            hideChildrenInMenu: true,
+            routes: [
+              {
+                path: '/setting/systemMgmt/staffMgmt/list/',
+                name: '成员管理',
+                component: './StaffMgmt',
+              },
+              {
+                path: '/setting/systemMgmt/staffMgmt/edit/',
+                name: '成员管理',
+                component: './StaffMgmt/StaffEdit',
+              },
+              {
+                path: '/setting/systemMgmt/staffMgmt/',
+                redirect: '/setting/systemMgmt/staffMgmt/list/'
+              }
+            ]
           },
           {
             path: '/setting/systemMgmt/roleMgmt',
             name: '角色管理',
-            component: './SystemMgmt/RoleMgmt',
+            component: './RoleMgmt',
           },
         ],
       },

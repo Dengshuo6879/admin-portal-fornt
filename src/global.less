@@ -1,4 +1,11 @@
 @import '~antd/es/style/themes/default.less';
+@primaryColor: #1890ff;
+@primaryBorderColor: #f0f0f0;
+
+// 默认边框
+.primaryBorder(@border, @px) {
+  @{border}: @px solid @primaryBorderColor;
+}
 
 html,
 body,
@@ -17,7 +24,7 @@ body,
     margin: 0;
   }
 
-  .ant-table-thead > tr > th {
+  .ant-table-thead>tr>th {
     background: aliceblue !important;
     border-bottom: none !important;
 
@@ -51,13 +58,14 @@ ol {
     width: 100%;
     overflow-x: auto;
 
-    &-thead > tr,
-    &-tbody > tr {
-      > th,
-      > td {
+    &-thead>tr,
+    &-tbody>tr {
+
+      >th,
+      >td {
         white-space: pre;
 
-        > span {
+        >span {
           display: block;
         }
       }
@@ -66,8 +74,9 @@ ol {
 }
 
 // Compatible with IE11
-@media screen and(-ms-high-contrast: active), (-ms-high-contrast: none) {
-  body .ant-design-pro > .ant-layout {
+@media screen and(-ms-high-contrast: active),
+(-ms-high-contrast: none) {
+  body .ant-design-pro>.ant-layout {
     min-height: 100vh;
   }
 }

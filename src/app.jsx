@@ -102,39 +102,3 @@ export function patchRoutes({ routes }) {
   const newRoutesList = routesList.concat(routes[0].routes, suffixRoutesList);
   routes[0].routes = newRoutesList
 }
-
-
-export const request = (config) => {
-
-  const authHeaderInterceptor = (url, options) => {
-    const authHeader = { Authorization: 'Bearer xxxxxx' };
-    return {
-      url: `${url}`,
-      options: { ...options, interceptors: true, headers: authHeader },
-    };
-  };
-
-  // const demoResponseInterceptors = (response, options) => {
-  //   return response;
-  // };
-
-  return {
-    timeout: 60 * 1000,
-    errorConfig: {
-      adaptor: (resData) => {
-        console.log('resData---', resData)
-
-
-
-
-        return {
-          // ...resData,
-          success: true,
-          errorMessage: resData.errorMessage,
-        };
-      },
-    },
-    requestInterceptors: [authHeaderInterceptor],
-    // responseInterceptors: [demoResponseInterceptors]
-  }
-};

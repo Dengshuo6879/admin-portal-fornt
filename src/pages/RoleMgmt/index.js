@@ -128,7 +128,7 @@ export default class RoleMgmt extends React.Component {
           <SearchBar searchBarFields={searchBarFields} onSearch={this.handleSearch} />
 
           <Radio.Group onChange={this.handleSizeChange}>
-            <Radio.Button>新增角色</Radio.Button>
+            <Radio.Button>创建角色</Radio.Button>
             <Radio.Button>批量删除角色</Radio.Button>
           </Radio.Group>
         </div>

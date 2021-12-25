@@ -1,0 +1,18 @@
+@import '../../global.less';
+
+.breadcrumb {
+    margin-bottom: 25px;
+    font-size: 16px;
+    padding-bottom: 15px;
+    .primaryBorder(border-bottom, 1px);
+
+    a {
+        color: @primaryColor;
+    }
+
+    :global {
+        .ant-breadcrumb-link {
+            color: #999;
+        }
+    }
+}
