@@ -3,6 +3,8 @@ import styles from './index.less';
 import { Button, Radio, Table, Tag, Space } from 'antd';
 import SearchBar from '@/components/SearchBar';
 
+import { SearchStaffInfoList } from '@/services/staffServices';
+
 export default class StaffMgmt extends React.Component {
   state = {
     searchParams: {
@@ -11,6 +13,16 @@ export default class StaffMgmt extends React.Component {
       staffStatus: undefined,
     },
   };
+
+  componentDidMount() {
+    this.handleSearchStaffInfoList();
+  }
+
+  // 搜索成员信息列表
+  handleSearchStaffInfoList = async () => {
+    const res = await SearchStaffInfoList();
+    console.log('res======', res)
+  }
 
   render() {
     const { searchParams } = this.state;

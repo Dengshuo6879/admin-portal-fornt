@@ -1,13 +1,11 @@
 import { PageLoading } from '@ant-design/pro-layout';
 import { history, Link } from 'umi';
 import RightContent from '@/components/RightContent';
-import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
+// import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
 import { BookOutlined, LinkOutlined } from '@ant-design/icons';
 import WebView from '@/pages/WebView'
-const isDev = process.env.NODE_ENV === 'development';
-const loginPath = '/user/login/';
-/** 获取用户信息比较慢的时候会展示一个 loading */
 
+/** 获取用户信息比较慢的时候会展示一个 loading */
 export const initialStateConfig = {
   loading: <PageLoading />,
 };
@@ -18,7 +16,8 @@ export const initialStateConfig = {
 export async function getInitialState() {
   const fetchUserInfo = async () => {
     try {
-      const msg = await queryCurrentUser();
+      // const msg = await queryCurrentUser();
+      const msg = {}
       return msg.data;
     } catch (error) {
       history.push(loginPath);
@@ -103,3 +102,39 @@ export function patchRoutes({ routes }) {
   const newRoutesList = routesList.concat(routes[0].routes, suffixRoutesList);
   routes[0].routes = newRoutesList
 }
+
+
+export const request = (config) => {
+
+  const authHeaderInterceptor = (url, options) => {
+    const authHeader = { Authorization: 'Bearer xxxxxx' };
+    return {
+      url: `${url}`,
+      options: { ...options, interceptors: true, headers: authHeader },
+    };
+  };
+
+  // const demoResponseInterceptors = (response, options) => {
+  //   return response;
+  // };
+
+  return {
+    timeout: 60 * 1000,
+    errorConfig: {
+      adaptor: (resData) => {
+        console.log('resData---', resData)
+
+
+
+
+        return {
+          // ...resData,
+          success: true,
+          errorMessage: resData.errorMessage,
+        };
+      },
+    },
+    requestInterceptors: [authHeaderInterceptor],
+    // responseInterceptors: [demoResponseInterceptors]
+  }
+};

@@ -9,10 +9,8 @@ import {
 import { Alert, message, Tabs } from 'antd';
 import React, { useState } from 'react';
 import { ProFormCaptcha, ProFormCheckbox, ProFormText, LoginForm } from '@ant-design/pro-form';
-import { useIntl, history, FormattedMessage, SelectLang, useModel } from 'umi';
-import Footer from '@/components/Footer';
-import { login } from '@/services/ant-design-pro/api';
-import { getFakeCaptcha } from '@/services/ant-design-pro/login';
+import { history, useModel } from 'umi';
+
 import styles from './index.less';
 
 const LoginMessage = ({ content }) => (
@@ -28,9 +26,7 @@ const LoginMessage = ({ content }) => (
 
 const Login = () => {
   const [userLoginState, setUserLoginState] = useState({});
-  const [type, setType] = useState('account');
   const { initialState, setInitialState } = useModel('@@initialState');
-  const intl = useIntl();
 
   const fetchUserInfo = async () => {
     const userInfo = await initialState?.fetchUserInfo?.();
@@ -49,12 +45,12 @@ const Login = () => {
         message.success('登录成功！');
 
         const staffInfo = {
-          staffUUID: 'c71c88d8-9066-4408-9135-a714c284335d',
-          staffLoginName: 'ds',
-          staffRealName: 'dengshuo',
-          accessToken: 'c71c88d8-9066-4408-9135-a714c28477d',
-        };
-        localStorage.setItem('staffInfo', JSON.stringify(staffInfo));
+          "staffUUID": "c71c88d8-9066-4408-9135-a714c284335d",
+          "staffLoginName": "ds",
+          "staffRealName": "dengshuo",
+          "accessToken": "c71c88d8-9066-4408-9135-a714c28477d"
+        }
+        localStorage.setItem('staffInfo', JSON.stringify(staffInfo))
 
         await fetchUserInfo();
         /** 此方法会跳转到 redirect 参数所在的位置 */
@@ -92,45 +88,49 @@ const Login = () => {
             await handleSubmit(values);
           }}
         >
-          <Tabs activeKey={type} onChange={setType}>
-            <Tabs.TabPane key="account" tab={'账户密码登录'} />
+          <Tabs activeKey={'account'}>
+            <Tabs.TabPane
+              key="account"
+              tab={'帐户密码登录'}
+            />
           </Tabs>
 
           {status === 'error' && loginType === 'account' && (
-            <LoginMessage content={'账户或密码错误(admin/ant.design)'} />
+            <LoginMessage
+              content={'帐户或密码错误'}
+            />
           )}
-          {type === 'account' && (
-            <>
-              <ProFormText
-                name="username"
-                fieldProps={{
-                  size: 'large',
-                  prefix: <UserOutlined className={styles.prefixIcon} />,
-                }}
-                placeholder={'用户名: admin or user'}
-                rules={[
-                  {
-                    required: true,
-                    message: '请输入用户名!',
-                  },
-                ]}
-              />
-              <ProFormText.Password
-                name="password"
-                fieldProps={{
-                  size: 'large',
-                  prefix: <LockOutlined className={styles.prefixIcon} />,
-                }}
-                placeholder={'密码: ant.design'}
-                rules={[
-                  {
-                    required: true,
-                    message: '请输入密码！',
-                  },
-                ]}
-              />
-            </>
-          )}
+
+          <>
+            <ProFormText
+              name="username"
+              fieldProps={{
+                size: 'large',
+                prefix: <UserOutlined className={styles.prefixIcon} />,
+              }}
+              placeholder={'用户名: admin or user'}
+              rules={[
+                {
+                  required: true,
+                  message: '请输入用户名!',
+                },
+              ]}
+            />
+            <ProFormText.Password
+              name="password"
+              fieldProps={{
+                size: 'large',
+                prefix: <LockOutlined className={styles.prefixIcon} />,
+              }}
+              placeholder={'密码: ant.design'}
+              rules={[
+                {
+                  required: true,
+                  message: '请输入密码！',
+                },
+              ]}
+            />
+          </>
 
           {status === 'error' && loginType === 'mobile' && <LoginMessage content="验证码错误" />}
           <div

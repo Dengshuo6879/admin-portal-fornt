@@ -44,11 +44,6 @@ export default [
         ],
       },
       {
-        path: '/setting/logMgmt',
-        name: '操作日志查询',
-        component: './SystemMgmt',
-      },
-      {
         path: '/setting/accountMgmt',
         name: '帐号管理',
         routes: [
@@ -63,6 +58,11 @@ export default [
             component: './SystemMgmt',
           },
         ],
+      },
+      {
+        path: '/setting/logMgmt',
+        name: '操作日志查询',
+        component: './SystemMgmt',
       },
       {
         component: './404',
