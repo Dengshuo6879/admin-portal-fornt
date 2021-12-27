@@ -7,7 +7,7 @@ import SearchBar from '@/components/SearchBar';
 import CustomPopconfirm from '@/components/CustomPopconfirm';
 import CustomTable from '@/components/CustomTable';
 
-import { SearchStaffInfoList, SearchDataSetBasicInfoList } from '@/services/staffServices';
+import { SearchStaffInfoList, SearchDataSetBasicInfoList, DeleteStaff, LockStaff, UnlockStaff } from '@/services/staffServices';
 
 export default class StaffMgmt extends React.Component {
   state = {
@@ -19,7 +19,9 @@ export default class StaffMgmt extends React.Component {
     pageParams: { from: 0, size: 10 },
 
     staffInfoList: [],
-    staffInfoListTotalCount: 0
+    staffInfoListTotalCount: 0,
+
+    deleteLoading: false
   };
 
   componentDidMount() {
@@ -27,74 +29,84 @@ export default class StaffMgmt extends React.Component {
   }
 
   // 搜索成员信息列表
-  handleSearchStaffInfoList = async () => {
+  handleSearchStaffInfoList = async (sec = 0.5) => {
     const { searchParams, pageParams } = this.state;
 
-    const rrr = await SearchDataSetBasicInfoList({ ...pageParams });
-    console.log('rrr=-=--=', rrr)
 
-    // const res = await SearchStaffInfoList({ ...searchParams, ...pageParams });
-    // const { totalCount = 0, staffInfoList = [] } = res;
+    setTimeout(() => {
+      // const res = await SearchStaffInfoList({ ...searchParams, ...pageParams });
+      // const { totalCount = 0, staffInfoList = [] } = res;
 
-    ////////////////////////////////////////
-    const staffInfoList = [
-      {
-        "staffUUID": "c71c88d8-9066-4408-9135-a714c284335d",
-        "staffLoginName": "ds",
-        "staffRealName": "dengshuo",
-        "staffSex": "male",
-        "staffTel": "0755-1232223",
-        "staffMobile": "15623566879",
-        "staffEmail": "shuo.deng@foxmail.com",
-        "staffStatus": 1,
-        "staffCreatorUUID": "c71c88d8-9066-4408-9135-a714c28477d",
-        "createdTime": "2021-1-11 17: 20: 00.005000",
-        "lastModifiedTime": "2021-1-11 17: 20: 00.005000"
-      },
-      {
-        "staffUUID": "c71c88d8-9066-4408-9135-a714c284335d",
-        "staffLoginName": "ds",
-        "staffRealName": "dengshuo",
-        "staffSex": "male",
-        "staffTel": "0755-1232223",
-        "staffMobile": "15623566879",
-        "staffEmail": "shuo.deng@foxmail.com",
-        "staffStatus": 0,
-        "staffCreatorUUID": "c71c88d8-9066-4408-9135-a714c28477d",
-        "createdTime": "2021-1-11 17: 20: 00.005000",
-        "lastModifiedTime": "2021-1-11 17: 20: 00.005000"
-      },
-      {
-        "staffUUID": "c71c88d8-9066-4408-9135-a714c284335d",
-        "staffLoginName": "ds",
-        "staffRealName": "dengshuo",
-        "staffSex": "male",
-        "staffTel": "0755-1232223",
-        "staffMobile": "15623566879",
-        "staffEmail": "shuo.deng@foxmail.com",
-        "staffStatus": 2,
-        "staffCreatorUUID": "c71c88d8-9066-4408-9135-a714c28477d",
-        "createdTime": "2021-1-11 17: 20: 00.005000",
-        "lastModifiedTime": "2021-1-11 17: 20: 00.005000"
-      }
-    ]
-    const totalCount = 2
-    ////////////////////////////////////////
+      ////////////////////////////////////////
+      const staffInfoList = [
+        {
+          "staffUUID": "c71c88d8-9066-4408-9135-a714c284335d",
+          "staffLoginName": "ds",
+          "staffRealName": "dengshuo",
+          "staffSex": "male",
+          "staffTel": "0755-1232223",
+          "staffMobile": "15623566879",
+          "staffEmail": "shuo.deng@foxmail.com",
+          "staffStatus": 1,
+          "staffCreatorUUID": "c71c88d8-9066-4408-9135-a714c28477d",
+          "createdTime": "2021-1-11 17: 20: 00.005000",
+          "lastModifiedTime": "2021-1-11 17: 20: 00.005000"
+        },
+        {
+          "staffUUID": "c71c88d8-9066-4408-9135-a714c284335d",
+          "staffLoginName": "ds",
+          "staffRealName": "dengshuo",
+          "staffSex": "male",
+          "staffTel": "0755-1232223",
+          "staffMobile": "15623566879",
+          "staffEmail": "shuo.deng@foxmail.com",
+          "staffStatus": 0,
+          "staffCreatorUUID": "c71c88d8-9066-4408-9135-a714c28477d",
+          "createdTime": "2021-1-11 17: 20: 00.005000",
+          "lastModifiedTime": "2021-1-11 17: 20: 00.005000"
+        },
+        {
+          "staffUUID": "c71c88d8-9066-4408-9135-a714c284335d",
+          "staffLoginName": "ds",
+          "staffRealName": "dengshuo",
+          "staffSex": "male",
+          "staffTel": "0755-1232223",
+          "staffMobile": "15623566879",
+          "staffEmail": "shuo.deng@foxmail.com",
+          "staffStatus": 2,
+          "staffCreatorUUID": "c71c88d8-9066-4408-9135-a714c28477d",
+          "createdTime": "2021-1-11 17: 20: 00.005000",
+          "lastModifiedTime": "2021-1-11 17: 20: 00.005000"
+        }
+      ]
+      const totalCount = 2
+      ////////////////////////////////////////
 
-    this.setState({ staffInfoList, staffInfoListTotalCount: totalCount })
+      this.setState({ staffInfoList, staffInfoListTotalCount: totalCount });
+    }, sec * 1000);
   }
 
   // 顶部bar点击
   handleBtnGroupChange = (type, staffInfo) => {
+    let locationInfo = {};
     switch (type) {
       case 'add_staff':
-        const locationInfo = {
+        locationInfo = {
           path: '/setting/systemMgmt/staffMgmt/edit/',
           breadcrumbName: `${staffInfo ? '修改' : '创建'}成员`,
         }
         this.handlePageParams(locationInfo);
 
 
+        history.push(locationInfo.path, { staffInfo });
+        break;
+
+      case 'reset_pwd':
+        locationInfo = {
+          path: '/setting/systemMgmt/staffMgmt/resetPwd/',
+          breadcrumbName: '重置密码',
+        }
+        this.handlePageParams(locationInfo);
         history.push(locationInfo.path, { staffInfo });
         break;
 
@@ -125,8 +137,23 @@ export default class StaffMgmt extends React.Component {
 
   // 删除指定成员
   handleDeleteStaff = async (staffUUID) => {
+    this.setState({ deleteLoading: true });
     const res = await DeleteStaff({ staffUUID });
-    const { errorCode } = res;
+    this.setState({ deleteLoading: false }, () => {
+      this.handleSearchStaffInfoList();
+    });
+  }
+
+  // 锁定指定成员
+  handleLockStaff = async (staffUUID) => {
+    const res = await LockStaff({ staffUUID });
+
+  }
+
+  // 解锁指定成员
+  handleUnlockStaff = async (staffUUID) => {
+    const res = await UnlockStaff({ staffUUID });
+
   }
 
   // 搜索
@@ -253,9 +280,9 @@ export default class StaffMgmt extends React.Component {
               </CustomPopconfirm>
             }
 
-            {staffStatus === 1 && <a>锁定成员</a>}
-            {staffStatus === 2 && <a>解锁成员</a>}
-            {staffStatus === 1 && <a>重置密码</a>}
+            {staffStatus === 1 && <a onClick={() => this.handleLockStaff(staffUUID)}>锁定成员</a>}
+            {staffStatus === 2 && <a onClick={() => this.handleUnlockStaff(staffUUID)}>解锁成员</a>}
+            {staffStatus === 1 && <a onClick={() => this.handleBtnGroupChange('reset_pwd', record)}>重置密码</a>}
           </Space>
 
         }

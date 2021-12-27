@@ -47,6 +47,11 @@ export default [
                 component: './StaffMgmt/StaffEdit',
               },
               {
+                path: '/setting/systemMgmt/staffMgmt/resetPwd/',
+                name: '重置密码',
+                component: './StaffMgmt/ResetPwd',
+              },
+              {
                 path: '/setting/systemMgmt/staffMgmt/',
                 redirect: '/setting/systemMgmt/staffMgmt/list/'
               }
