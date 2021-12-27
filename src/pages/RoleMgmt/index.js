@@ -1,17 +1,108 @@
 import React from 'react';
-import styles from './index.less';
-import { Button, Radio, Table, Tag, Space } from 'antd';
+import { Radio, Space } from 'antd';
+import { history } from 'umi';
+import LayoutBox from '@/components/LayoutBox';
 import SearchBar from '@/components/SearchBar';
+import CustomTable from '@/components/CustomTable';
+import { SearchRoleInfoList, DeleteRole } from '@/services/roleServices';
 
 export default class RoleMgmt extends React.Component {
   state = {
     searchParams: {
       roleName: '',
     },
+    pageParams: { from: 0, size: 10 },
+
+    roleInfoList: [],
+    roleInfoListTotalCount: 0,
   };
 
+  componentDidMount() {
+    this.handleSearchRoleInfoList();
+  }
+
+  // 搜索角色信息列表
+  handleSearchRoleInfoList = (sec = 0.5) => {
+    const { searchParams, pageParams } = this.state;
+
+    setTimeout(async () => {
+      const res = await SearchRoleInfoList({ ...searchParams, ...pageParams });
+      // const { roleInfoList, totalCount } = res;
+      ////////////////////////////////////
+      const roleInfoList = [
+        {
+          "roleUUID": "c71c88d8-9066-4408-9135-a714c284335d",
+          "roleName": "系统管理员",
+          "roleCode": "systemAdmin",
+          "roleDesc": "管系统的",
+          "createdTime": "2021-1-11 17: 20: 00.005000",
+          "lastModifiedTime": "2021-1-11 17: 20: 00.005000"
+        },
+        {
+          "roleUUID": "c71c88d8-9066-4408-9135-a714c2843353",
+          "roleName": "运营管理员",
+          "roleCode": "systemAdmin",
+          "roleDesc": "管运营的",
+          "createdTime": "2021-1-11 17: 20: 00.005000",
+          "lastModifiedTime": "2021-1-11 17: 20: 00.005000"
+        }
+      ];
+      const totalCount = 2;
+      ////////////////////////////////////
+
+      this.setState({ roleInfoList, roleInfoListTotalCount: totalCount });
+
+    }, sec * 1000);
+  }
+
+
+  // 跳转角色新增、编辑页面
+  handleToRoleEdit = (roleInfo) => {
+    const locationInfo = {
+      path: '/setting/systemMgmt/roleMgmt/edit/',
+      breadcrumbName: `${roleInfo ? '修改' : '创建'}角色`,
+    }
+    this.handlePageParams(locationInfo);
+    history.push(locationInfo.path, { roleInfo });
+  }
+
+  // 页面跳转参数存储
+  handlePageParams = (locationInfo) => {
+    // 保存页面搜索数据
+    const { searchParams, pageParams } = this.state;
+    const breadcrumbInfo = {
+      breadcrumbList: [
+        {
+          path: '/setting/systemMgmt/roleMgmt/',
+          breadcrumbName: '角色管理',
+          params: {
+            searchParams,
+            pageParams
+          }
+        },
+        locationInfo
+      ]
+    }
+    sessionStorage.setItem('breadcrumbInfo', JSON.stringify(breadcrumbInfo));
+  }
+
+  // 搜索
+  handleSearch = (searchParams) => {
+    const { pageParams } = this.state;
+    this.setState({ searchParams, pageParams: { ...pageParams, from: 0 } }, () => {
+      this.handleSearchRoleInfoList();
+    })
+  }
+
+  // table分页
+  handleTablePageChange = (pageParams) => {
+    this.setState({ pageParams }, () => {
+      this.handleSearchRoleInfoList();
+    });
+  }
+
   render() {
-    const { searchParams } = this.state;
+    const { searchParams, pageParams, roleInfoList, roleInfoListTotalCount } = this.state;
     const { roleName } = searchParams;
 
     const searchBarFields = {
@@ -25,94 +116,29 @@ export default class RoleMgmt extends React.Component {
 
     const columns = [
       {
-        title: '登录名',
-        dataIndex: 'name',
-        key: 'name',
+        title: '角色名称',
+        dataIndex: 'roleName',
+        width: '20%',
+        render: (text, record) => <a onClick={() => this.handleToRoleEdit(record)}>{text}</a>,
       },
       {
-        title: '成员姓名',
-        dataIndex: 'age',
-        key: 'age',
-        render: (text) => <a>{text}</a>,
+        title: '角色助记码',
+        dataIndex: 'roleCode',
+        width: '20%',
       },
       {
-        title: '性别',
-        dataIndex: 'address',
-        key: 'address',
-      },
-      {
-        title: '手机',
-        key: 'tags',
-        dataIndex: 'tags',
-        render: (tags) => (
-          <>
-            {tags.map((tag) => {
-              let color = tag.length > 5 ? 'geekblue' : 'green';
-              if (tag === 'loser') {
-                color = 'volcano';
-              }
-              return (
-                <Tag color={color} key={tag}>
-                  {tag.toUpperCase()}
-                </Tag>
-              );
-            })}
-          </>
-        ),
-      },
-      {
-        title: 'Email',
-        key: 'action',
-        render: (text, record) => (
-          <Space size="middle">
-            <a>Invite {record.name}</a>
-            <a>Delete</a>
-          </Space>
-        ),
-      },
-      {
-        title: '状态',
-        key: 'action',
-        render: (text, record) => (
-          <Space size="middle">
-            <a>Invite {record.name}</a>
-            <a>Delete</a>
-          </Space>
-        ),
+        title: '角色描述',
+        dataIndex: 'roleDesc',
+        width: '30%',
       },
       {
         title: '操作',
-        key: 'action',
-        render: (text, record) => (
-          <Space size="middle">
-            <a>Invite {record.name}</a>
-            <a>Delete</a>
+        render: (record) => (
+          <Space size="small">
+            <a>查看成员</a>
+            <a>删除角色</a>
           </Space>
         ),
-      },
-    ];
-
-    const data = [
-      {
-        key: '1',
-        name: 'John Brown',
-        age: 32,
-        address: 'New York No. 1 Lake Park',
-        tags: ['nice', 'developer'],
-      },
-      {
-        key: '2',
-        name: 'Jim Green',
-        age: 42,
-        address: 'London No. 1 Lake Park',
-        tags: ['loser'],
-      },
-      {
-        key: '3',
-        name: 'Joe Black',
-        age: 32,
-        address: 'Sidney No. 1 Lake Park',
-        tags: ['cool', 'teacher'],
       },
     ];
 
@@ -123,25 +149,28 @@ export default class RoleMgmt extends React.Component {
     };
 
     return (
-      <div className={styles.roleMgmt}>
-        <div className={styles.topBar}>
+      <LayoutBox>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <SearchBar searchBarFields={searchBarFields} onSearch={this.handleSearch} />
 
           <Radio.Group onChange={this.handleSizeChange}>
-            <Radio.Button>创建角色</Radio.Button>
+            <Radio.Button onClick={() => this.handleToRoleEdit()}>创建角色</Radio.Button>
             <Radio.Button>批量删除角色</Radio.Button>
           </Radio.Group>
         </div>
 
-        <Table
+        <CustomTable
           rowSelection={{
             type: 'checkbox',
             ...rowSelection,
           }}
           columns={columns}
-          dataSource={data}
+          dataSource={roleInfoList}
+          total={roleInfoListTotalCount}
+          pageParams={pageParams}
+          onChange={this.handleTablePageChange}
         />
-      </div>
+      </LayoutBox>
     );
   }
 }

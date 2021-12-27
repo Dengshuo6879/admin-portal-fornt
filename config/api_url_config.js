@@ -23,6 +23,7 @@ const api_url = {
 
     staffMgrBaseUrl: reqUrlDomamin + '/StaffMgr/',
     menuMgrBaseUrl: reqUrlDomamin + '/MenuMgr/',
+    roleMgrBaseUrl: reqUrlDomamin + '/RoleMgr/',
 };
 
 export default api_url;

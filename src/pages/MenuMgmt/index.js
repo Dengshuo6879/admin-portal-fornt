@@ -1,9 +1,9 @@
 import React from 'react';
 import styles from './index.less';
-import { Tree, Radio, Row, Col, Form, Input, Button, Space, notification } from 'antd';
+import { Tree, Radio, Form, Input, Button, Space, notification } from 'antd';
 import LayoutBox from '@/components/LayoutBox';
 import { SaveMenuInfo, SearchMenuInfoList, DeleteMenu } from '@/services/menuServices';
-import { formRules } from '@/utils/utils';
+import { formRules, getTreeData } from '@/utils/utils';
 
 const { DirectoryTree } = Tree;
 const formItemLayout = {
@@ -88,7 +88,7 @@ export default class MenuMgmt extends React.Component {
         ]
         ////////////////////////////////////////////////
 
-        const treeMenuInfoList = this.handleTreeData(menuInfoList)
+        const treeMenuInfoList = getTreeData(menuInfoList)
         this.setState({ menuInfoList: treeMenuInfoList, currentMenuInfo: treeMenuInfoList[0] || {} }, () => {
             this.formRef.current.resetFields();
         })
@@ -154,31 +154,6 @@ export default class MenuMgmt extends React.Component {
         this.handleSaveMenuInfo(values);
     }
 
-    // 处理树形结构数据
-    handleTreeData = (arr) => {
-        const obj = {}; //构建map
-        arr.map(item => {
-            item.title = item.menuName;
-            item.key = item.menuUUID;
-            item.isLeaf = true;
-            obj[item.menuUUID] = item; // 构建以id为键 当前数据为值
-        });
-
-        const treeData = [];
-        arr.map(child => {
-            const mapItem = obj[child.parentMenuUUID]; // 判断当前数据的parentId是否存在map中
-            if (mapItem) {
-                mapItem.isLeaf = false;
-                //存在则表示当前数据不是最顶层的数据
-                (mapItem.children || (mapItem.children = [])).push(child);
-            } else {
-                // 不存在则是顶层数据
-                treeData.push(child);
-            }
-        });
-        return treeData;
-    }
-
     // 菜单选择
     handleMenuSelect = (keys, info) => {
         this.setState({ currentMenuInfo: info.selectedNodes[0], canEdit: false }, () => {
@@ -213,10 +188,8 @@ export default class MenuMgmt extends React.Component {
     render() {
         const { menuInfoList, currentMenuInfo, canEdit } = this.state;
         const { menuName, menuCode, menuUrl, menuOrder, menuUUID } = currentMenuInfo;
-        console.log('currentMenuInfo--', currentMenuInfo)
 
         return <LayoutBox>
-
             <div className={styles.menuTopBar}>
                 <Radio.Group>
                     <Radio.Button onClick={() => this.handleAddMenu('parent_menu')}>新增父资源</Radio.Button>
@@ -231,7 +204,7 @@ export default class MenuMgmt extends React.Component {
                     <div className={styles.title}>菜单结构树</div>
                     <DirectoryTree
                         selectedKeys={[menuUUID]}
-                        autoExpandParent
+                        autoExpandParent={true}
                         onSelect={this.handleMenuSelect}
                         treeData={menuInfoList}
                     />

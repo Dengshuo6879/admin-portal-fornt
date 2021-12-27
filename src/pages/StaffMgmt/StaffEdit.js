@@ -35,7 +35,7 @@ export default class StaffEdit extends React.Component {
         this.handleOpenNotification(values);
     }
 
-    // 删除提示
+    // 保存提示
     handleOpenNotification = (values) => {
         notification.close(this.key);
 

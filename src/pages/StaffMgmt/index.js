@@ -1,5 +1,4 @@
 import React from 'react';
-import styles from './index.less';
 import { Radio, Tag, Space } from 'antd';
 import { history } from 'umi';
 import LayoutBox from '@/components/LayoutBox';
@@ -29,12 +28,12 @@ export default class StaffMgmt extends React.Component {
   }
 
   // 搜索成员信息列表
-  handleSearchStaffInfoList = async (sec = 0.5) => {
+  handleSearchStaffInfoList = (sec = 0.5) => {
     const { searchParams, pageParams } = this.state;
 
 
-    setTimeout(() => {
-      // const res = await SearchStaffInfoList({ ...searchParams, ...pageParams });
+    setTimeout(async () => {
+      const res = await SearchStaffInfoList({ ...searchParams, ...pageParams });
       // const { totalCount = 0, staffInfoList = [] } = res;
 
       ////////////////////////////////////////
@@ -296,7 +295,7 @@ export default class StaffMgmt extends React.Component {
     };
 
     return <LayoutBox>
-      <div className={styles.topBar}>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <SearchBar searchBarFields={searchBarFields} onSearch={this.handleSearch} />
 
         <Radio.Group>

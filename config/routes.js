@@ -60,7 +60,23 @@ export default [
           {
             path: '/setting/systemMgmt/roleMgmt',
             name: '角色管理',
-            component: './RoleMgmt',
+            hideChildrenInMenu: true,
+            routes: [
+              {
+                path: '/setting/systemMgmt/roleMgmt/list/',
+                name: '成员管理',
+                component: './RoleMgmt',
+              },
+              {
+                path: '/setting/systemMgmt/roleMgmt/edit/',
+                name: '成员管理',
+                component: './RoleMgmt/RoleEdit',
+              },
+              {
+                path: '/setting/systemMgmt/roleMgmt/',
+                redirect: '/setting/systemMgmt/roleMgmt/list/'
+              }
+            ]
           },
         ],
       },

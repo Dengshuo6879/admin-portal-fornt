@@ -78,3 +78,30 @@ export function getBreadcrumb() {
     return breadcrumbInfo
   }
 }
+
+
+
+// 处理树形结构数据
+export function getTreeData(arr) {
+  const obj = {}; //构建map
+  arr.map(item => {
+    item.title = item.menuName;
+    item.key = item.menuUUID;
+    item.isLeaf = true;
+    obj[item.menuUUID] = item; // 构建以id为键 当前数据为值
+  });
+
+  const treeData = [];
+  arr.map(child => {
+    const mapItem = obj[child.parentMenuUUID]; // 判断当前数据的parentId是否存在map中
+    if (mapItem) {
+      mapItem.isLeaf = false;
+      //存在则表示当前数据不是最顶层的数据
+      (mapItem.children || (mapItem.children = [])).push(child);
+    } else {
+      // 不存在则是顶层数据
+      treeData.push(child);
+    }
+  });
+  return treeData;
+}
