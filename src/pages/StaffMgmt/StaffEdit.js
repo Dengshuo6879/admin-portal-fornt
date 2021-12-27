@@ -84,7 +84,7 @@ export default class StaffEdit extends React.Component {
             <Form
                 {...formItemLayout}
                 ref={this.formRef}
-                name='addDataSet'
+                name='staffForm'
                 colon={false}
                 onFinish={this.handleFormFinish}
                 validateMessages={{

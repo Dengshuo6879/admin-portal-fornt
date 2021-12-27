@@ -22,6 +22,7 @@ const api_url = {
     reqUrlDomamin,
 
     staffMgrBaseUrl: reqUrlDomamin + '/StaffMgr/',
+    menuMgrBaseUrl: reqUrlDomamin + '/MenuMgr/',
 };
 
 export default api_url;

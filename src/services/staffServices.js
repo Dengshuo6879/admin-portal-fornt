@@ -1,44 +1,19 @@
-import { message } from 'antd';
+/** 成员管理相关接口 */
 
-// 成员管理接口
-import { extend } from 'umi-request';
-
+import { request } from './requeset';
 import api_url from '@/../config/api_url_config';
 const { staffMgrBaseUrl } = api_url;
 
-const request = extend({
-  prefix: staffMgrBaseUrl,
-  timeout: 1000 * 60,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  errorHandler: function (error) {
-    if (error.response) {
-      // 请求已发送但服务端返回状态码非 2xx 的响应
-      const { errorCode, errorMessage } = error.response;
-
-
-    } else {
-      // 请求初始化时出错或者没有响应返回的异常
-      console.log(error.message);
-    }
-
-    return error.data || {}
-  }
-});
-
-
 export async function SearchDataSetBasicInfoList(body) {
-  return request('SearchDataSetBasicInfoList', {
+  return request(staffMgrBaseUrl + 'SearchDataSetBasicInfoList', {
     method: 'POST',
     data: body
   });
 }
 
-
 // 创建成员
 export async function CreateStaff(body) {
-  return request('CreateStaff', {
+  return request(staffMgrBaseUrl + 'CreateStaff', {
     method: 'POST',
     data: body
   });
@@ -46,7 +21,7 @@ export async function CreateStaff(body) {
 
 // 保存成员信息
 export async function SaveStaffInfo(body) {
-  return request('SaveStaffInfo', {
+  return request(staffMgrBaseUrl + 'SaveStaffInfo', {
     method: 'POST',
     data: body
   });
@@ -54,7 +29,7 @@ export async function SaveStaffInfo(body) {
 
 // 搜索成员信息列表
 export async function SearchStaffInfoList(body) {
-  return request('SearchStaffInfoList', {
+  return request(staffMgrBaseUrl + 'SearchStaffInfoList', {
     method: 'POST',
     data: body
   });

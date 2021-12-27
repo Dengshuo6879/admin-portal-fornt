@@ -1,0 +1,56 @@
+@import '../../global.less';
+
+.menuTopBar {
+    display: flex;
+    justify-content: flex-end;
+}
+
+
+.menuBox {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+
+    .menuPage {
+        border-radius: 6px;
+        box-shadow: @primaryBoxShadow;
+        height: fit-content;
+        .primaryBorder(border, 1px);
+
+        .title {
+            font-weight: 500;
+            padding: 15px;
+            margin-bottom: 20px;
+            .primaryBorder(border-bottom, 1px);
+        }
+    }
+
+    .menuPageLeft {
+        width: 30%;
+        padding-bottom: 20px;
+        .menuPage;
+
+        :global {
+            .ant-tree {
+                .ant-tree-treenode {
+                    padding: 8px 0 12px 5px;
+                }
+
+                .ant-tree-switcher {
+                    width: 20px;
+                }
+            }
+        }
+    }
+
+
+    .menuPageRight {
+        width: 70%;
+        margin-left: 20px;
+        .menuPage;
+
+        .formBox {
+            padding: 20px 20px 0;
+        }
+    }
+}

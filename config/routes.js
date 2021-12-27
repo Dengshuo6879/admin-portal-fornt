@@ -29,7 +29,7 @@ export default [
           {
             path: '/setting/systemMgmt/menuMgmt',
             name: '菜单管理',
-            component: './SystemMgmt',
+            component: './MenuMgmt',
           },
           {
             path: '/setting/systemMgmt/staffMgmt/',
