@@ -1,12 +1,14 @@
 import React from 'react';
-import { Radio, Tag, Space } from 'antd';
+import { Radio, Tag, Space, message } from 'antd';
 import { history } from 'umi';
 import LayoutBox from '@/components/LayoutBox';
 import SearchBar from '@/components/SearchBar';
 import CustomPopconfirm from '@/components/CustomPopconfirm';
 import CustomTable from '@/components/CustomTable';
+import RoleSelectModal from './role_select_modal';
 
-import { SearchStaffInfoList, SearchDataSetBasicInfoList, DeleteStaff, LockStaff, UnlockStaff } from '@/services/staffServices';
+import { SearchStaffInfoList, DeleteStaff, LockStaff, UnlockStaff } from '@/services/staffServices';
+import { SaveStaffRelatedRole } from '@/services/roleServices';
 
 export default class StaffMgmt extends React.Component {
   state = {
@@ -19,9 +21,10 @@ export default class StaffMgmt extends React.Component {
 
     staffInfoList: [],
     staffInfoListTotalCount: 0,
-
-    deleteLoading: false
+    deleteLoading: false,
+    roleSelectModalVisible: false
   };
+  selectedStaff = [];
 
   componentDidMount() {
     this.handleSearchStaffInfoList();
@@ -114,6 +117,31 @@ export default class StaffMgmt extends React.Component {
     }
   }
 
+  // 分配角色
+  handleDistribution = () => {
+    if (this.selectedStaff.length === 0) {
+      message.info('请选择成员');
+      return
+    }
+    this.handleRoleSelectModalVisible(true);
+  }
+
+  // 分配角色弹框
+  handleRoleSelectModalVisible = (visible) => {
+    this.setState({ roleSelectModalVisible: visible });
+  }
+
+  // 给成员分配角色
+  handleSaveStaffRelatedRole = async (roleUUIDList) => {
+    const staffUUIDList = [];
+    this.selectedStaff.map(staffInfo => {
+      staffUUIDList.push(staffInfo.staffUUID);
+    })
+    const res = await SaveStaffRelatedRole({
+      roleUUIDList, staffUUIDList
+    });
+  }
+
   // 页面跳转参数存储
   handlePageParams = (locationInfo) => {
     // 保存页面搜索数据
@@ -172,7 +200,7 @@ export default class StaffMgmt extends React.Component {
 
 
   render() {
-    const { searchParams, pageParams, staffInfoList, staffInfoListTotalCount } = this.state;
+    const { searchParams, pageParams, staffInfoList, staffInfoListTotalCount, roleSelectModalVisible } = this.state;
     const { staffLoginName, staffRealName, staffStatus } = searchParams;
 
     const searchBarFields = {
@@ -279,8 +307,24 @@ export default class StaffMgmt extends React.Component {
               </CustomPopconfirm>
             }
 
-            {staffStatus === 1 && <a onClick={() => this.handleLockStaff(staffUUID)}>锁定成员</a>}
-            {staffStatus === 2 && <a onClick={() => this.handleUnlockStaff(staffUUID)}>解锁成员</a>}
+            {staffStatus === 1 && <CustomPopconfirm
+              placement={'bottomRight'}
+              onConfirm={() => this.handleLockStaff(staffUUID)}
+              confirmLoading={false}
+              title={'确定锁定该成员？'}
+            >
+              <a>锁定成员</a>
+            </CustomPopconfirm>}
+
+            {staffStatus === 2 && <CustomPopconfirm
+              placement={'bottomRight'}
+              onConfirm={() => this.handleUnlockStaff(staffUUID)}
+              confirmLoading={false}
+              title={'确定解锁该成员？'}
+            >
+              <a>解锁成员</a>
+            </CustomPopconfirm>
+            }
             {staffStatus === 1 && <a onClick={() => this.handleBtnGroupChange('reset_pwd', record)}>重置密码</a>}
           </Space>
 
@@ -291,6 +335,7 @@ export default class StaffMgmt extends React.Component {
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
         console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+        this.selectedStaff = selectedRows;
       },
     };
 
@@ -300,7 +345,7 @@ export default class StaffMgmt extends React.Component {
 
         <Radio.Group>
           <Radio.Button onClick={() => this.handleBtnGroupChange('add_staff')}>创建成员</Radio.Button>
-          <Radio.Button onClick={() => this.handleBtnGroupChange('')}>分配角色</Radio.Button>
+          <Radio.Button onClick={this.handleDistribution}>分配角色</Radio.Button>
           <Radio.Button onClick={() => this.handleBtnGroupChange('')}>导入成员</Radio.Button>
           <Radio.Button onClick={() => this.handleBtnGroupChange('')}>导出成员</Radio.Button>
           <Radio.Button onClick={() => this.handleBtnGroupChange('')}>批量删除成员</Radio.Button>
@@ -318,6 +363,11 @@ export default class StaffMgmt extends React.Component {
         pageParams={pageParams}
         onChange={this.handleTablePageChange}
       />
+
+      {roleSelectModalVisible && <RoleSelectModal
+        onCancel={() => this.handleRoleSelectModalVisible(false)}
+        onOk={this.handleSaveStaffRelatedRole}
+      />}
     </LayoutBox>
   }
 }

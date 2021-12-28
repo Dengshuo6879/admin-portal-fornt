@@ -18,7 +18,7 @@ export default class RoleMgmt extends React.Component {
     roleInfoListTotalCount: 0,
     currentRoleInfo: null
   };
-  selectedRows = []
+  selectedRole = []
 
   componentDidMount() {
     this.handleSearchRoleInfoList();
@@ -96,14 +96,14 @@ export default class RoleMgmt extends React.Component {
 
   // 处理批量删除
   handleBatchDeleteRole = () => {
-    if (this.selectedRows.length === 0) {
-      message.info('请选择要删除的角色');
+    if (this.selectedRole.length === 0) {
+      message.info('请选择角色');
       return
     }
 
     const roleUUIDList = [];
-    this.selectedRows.map(item => {
-      roleUUIDList.push(item.roleUUID);
+    this.selectedRole.map(roleInfo => {
+      roleUUIDList.push(roleInfo.roleUUID);
     })
     this.handleOpenNotification(roleUUIDList);
   }
@@ -205,7 +205,7 @@ export default class RoleMgmt extends React.Component {
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
         console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-        this.selectedRows = selectedRows;
+        this.selectedRole = selectedRows;
       },
     };
 
