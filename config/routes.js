@@ -9,101 +9,90 @@ export default [
           {
             name: '登录',
             path: '/user/login/',
-            component: './User/Login',
+            component: './UserMgmt/Login',
+          },
+          {
+            path: '/user/modifyProfile/',
+            name: '修改资料',
+            component: './UserMgmt/ModifyProfile',
+          },
+          {
+            path: '/user/modifyPwd/',
+            name: '修改密码',
+            component: './UserMgmt/ModifyPwd',
           },
         ],
       },
       {
         component: './404',
+      },
+    ],
+  },
+
+  {
+    path: '/systemMgmt',
+    name: '系统管理',
+    routes: [
+      {
+        path: '/systemMgmt/menuMgmt',
+        name: '菜单管理',
+        component: './MenuMgmt',
+      },
+      {
+        path: '/systemMgmt/staffMgmt/',
+        name: '成员管理',
+        hideChildrenInMenu: true,
+        routes: [
+          {
+            path: '/systemMgmt/staffMgmt/list/',
+            name: '成员管理',
+            component: './StaffMgmt',
+          },
+          {
+            path: '/systemMgmt/staffMgmt/edit/',
+            name: '成员管理',
+            component: './StaffMgmt/StaffEdit',
+          },
+          {
+            path: '/systemMgmt/staffMgmt/resetPwd/',
+            name: '重置密码',
+            component: './StaffMgmt/ResetPwd',
+          },
+          {
+            path: '/systemMgmt/staffMgmt/',
+            redirect: '/systemMgmt/staffMgmt/list/'
+          }
+        ]
+      },
+      {
+        path: '/systemMgmt/roleMgmt',
+        name: '角色管理',
+        hideChildrenInMenu: true,
+        routes: [
+          {
+            path: '/systemMgmt/roleMgmt/list/',
+            name: '成员管理',
+            component: './RoleMgmt',
+          },
+          {
+            path: '/systemMgmt/roleMgmt/edit/',
+            name: '成员管理',
+            component: './RoleMgmt/RoleEdit',
+          },
+          {
+            path: '/systemMgmt/roleMgmt/',
+            redirect: '/systemMgmt/roleMgmt/list/'
+          }
+        ]
+      },
+      {
+        path: '/systemMgmt/logMgmt',
+        name: '操作日志',
+        component: './LogMgmt',
       },
     ],
   },
   {
-    path: '/setting/',
-    name: '系统设置',
-    routes: [
-      {
-        path: '/setting/systemMgmt',
-        name: '系统管理',
-        routes: [
-          {
-            path: '/setting/systemMgmt/menuMgmt',
-            name: '菜单管理',
-            component: './MenuMgmt',
-          },
-          {
-            path: '/setting/systemMgmt/staffMgmt/',
-            name: '成员管理',
-            hideChildrenInMenu: true,
-            routes: [
-              {
-                path: '/setting/systemMgmt/staffMgmt/list/',
-                name: '成员管理',
-                component: './StaffMgmt',
-              },
-              {
-                path: '/setting/systemMgmt/staffMgmt/edit/',
-                name: '成员管理',
-                component: './StaffMgmt/StaffEdit',
-              },
-              {
-                path: '/setting/systemMgmt/staffMgmt/resetPwd/',
-                name: '重置密码',
-                component: './StaffMgmt/ResetPwd',
-              },
-              {
-                path: '/setting/systemMgmt/staffMgmt/',
-                redirect: '/setting/systemMgmt/staffMgmt/list/'
-              }
-            ]
-          },
-          {
-            path: '/setting/systemMgmt/roleMgmt',
-            name: '角色管理',
-            hideChildrenInMenu: true,
-            routes: [
-              {
-                path: '/setting/systemMgmt/roleMgmt/list/',
-                name: '成员管理',
-                component: './RoleMgmt',
-              },
-              {
-                path: '/setting/systemMgmt/roleMgmt/edit/',
-                name: '成员管理',
-                component: './RoleMgmt/RoleEdit',
-              },
-              {
-                path: '/setting/systemMgmt/roleMgmt/',
-                redirect: '/setting/systemMgmt/roleMgmt/list/'
-              }
-            ]
-          },
-        ],
-      },
-      {
-        path: '/setting/accountMgmt',
-        name: '帐号管理',
-        routes: [
-          {
-            path: '/setting/accountMgmt/modify',
-            name: '修改资料',
-            component: './SystemMgmt',
-          },
-          {
-            path: '/setting/accountMgmt/modifyPwd',
-            name: '修改密码',
-            component: './SystemMgmt',
-          },
-        ],
-      },
-      {
-        path: '/setting/logMgmt',
-        name: '操作日志查询',
-        component: './SystemMgmt',
-      },
-      {
-        component: './404',
-      },
-    ],
-  },
+    component: './404',
+  }
 ];

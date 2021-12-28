@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 // 生成n位随机数
 export const digitRandomNum = (n) => {
   let t = '';
@@ -104,4 +106,33 @@ export function getTreeData(arr) {
     }
   });
   return treeData;
+}
+
+// 时间格式
+export const dateFormat = {
+  'date': 'YYYY-MM-DD',
+  'min': 'YYYY-MM-DD HH:mm',
+  'sec': 'YYYY-MM-DD HH:mm:ss',
+  'min_no_style': 'YYYYMMDDHHmm'
+}
+
+// 截取时间
+export const cutoutTime = (timeStr, precision) => {
+  if (!timeStr) return ''
+  let format = '';
+  switch (precision) {
+    case 'sec':
+      format = dateFormat.sec;
+      break;
+    case 'date':
+      format = dateFormat.date;
+      break;
+    case 'min':
+      format = dateFormat.min;
+      break;
+    default:
+      format = dateFormat.sec;
+      break;
+  }
+  return dayjs(timeStr).format(format)
 }

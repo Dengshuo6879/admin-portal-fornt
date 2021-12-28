@@ -62,7 +62,7 @@ export default class RoleMgmt extends React.Component {
   // 跳转角色新增、编辑页面
   handleToRoleEdit = (roleInfo) => {
     const locationInfo = {
-      path: '/setting/systemMgmt/roleMgmt/edit/',
+      path: '/systemMgmt/roleMgmt/edit/',
       breadcrumbName: `${roleInfo ? '修改' : '创建'}角色`,
     }
     this.handlePageParams(locationInfo);
@@ -76,7 +76,7 @@ export default class RoleMgmt extends React.Component {
     const breadcrumbInfo = {
       breadcrumbList: [
         {
-          path: '/setting/systemMgmt/roleMgmt/',
+          path: '/systemMgmt/roleMgmt/',
           breadcrumbName: '角色管理',
           params: {
             searchParams,

@@ -94,7 +94,7 @@ export default class StaffMgmt extends React.Component {
     switch (type) {
       case 'add_staff':
         locationInfo = {
-          path: '/setting/systemMgmt/staffMgmt/edit/',
+          path: '/systemMgmt/staffMgmt/edit/',
           breadcrumbName: `${staffInfo ? '修改' : '创建'}成员`,
         }
         this.handlePageParams(locationInfo);
@@ -105,7 +105,7 @@ export default class StaffMgmt extends React.Component {
 
       case 'reset_pwd':
         locationInfo = {
-          path: '/setting/systemMgmt/staffMgmt/resetPwd/',
+          path: '/systemMgmt/staffMgmt/resetPwd/',
           breadcrumbName: '重置密码',
         }
         this.handlePageParams(locationInfo);
@@ -149,7 +149,7 @@ export default class StaffMgmt extends React.Component {
     const breadcrumbInfo = {
       breadcrumbList: [
         {
-          path: '/setting/systemMgmt/staffMgmt/',
+          path: '/systemMgmt/staffMgmt/',
           breadcrumbName: '成员管理',
           params: {
             searchParams,
@@ -327,7 +327,6 @@ export default class StaffMgmt extends React.Component {
             }
             {staffStatus === 1 && <a onClick={() => this.handleBtnGroupChange('reset_pwd', record)}>重置密码</a>}
           </Space>
-
         }
       },
     ];
