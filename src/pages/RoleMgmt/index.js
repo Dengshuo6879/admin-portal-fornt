@@ -1,9 +1,11 @@
 import React from 'react';
-import { Radio, Space } from 'antd';
+import { message, Radio, Space, notification, Button } from 'antd';
 import { history } from 'umi';
 import LayoutBox from '@/components/LayoutBox';
 import SearchBar from '@/components/SearchBar';
+import CustomPopconfirm from '@/components/CustomPopconfirm';
 import CustomTable from '@/components/CustomTable';
+import RoleRelatedStaffModal from './role_related_staff_modal';
 import { SearchRoleInfoList, DeleteRole } from '@/services/roleServices';
 
 export default class RoleMgmt extends React.Component {
@@ -12,10 +14,11 @@ export default class RoleMgmt extends React.Component {
       roleName: '',
     },
     pageParams: { from: 0, size: 10 },
-
     roleInfoList: [],
     roleInfoListTotalCount: 0,
+    currentRoleInfo: null
   };
+  selectedRows = []
 
   componentDidMount() {
     this.handleSearchRoleInfoList();
@@ -86,6 +89,45 @@ export default class RoleMgmt extends React.Component {
     sessionStorage.setItem('breadcrumbInfo', JSON.stringify(breadcrumbInfo));
   }
 
+  // 删除角色
+  handleDeleteRole = async (roleUUIDList) => {
+    const res = await DeleteRole({ roleUUIDList })
+  }
+
+  // 处理批量删除
+  handleBatchDeleteRole = () => {
+    if (this.selectedRows.length === 0) {
+      message.info('请选择要删除的角色');
+      return
+    }
+
+    const roleUUIDList = [];
+    this.selectedRows.map(item => {
+      roleUUIDList.push(item.roleUUID);
+    })
+    this.handleOpenNotification(roleUUIDList);
+  }
+
+  // 批量删除提示
+  handleOpenNotification = (roleUUIDList) => {
+    notification.close(this.key);
+
+    this.key = `open${Date.now()}`;
+    const btn = (
+      <Button type="primary" size="small" ghost onClick={() => { notification.close(this.key); this.handleDeleteRole(roleUUIDList) }}>
+        确定
+      </Button>
+    );
+
+    notification.warn({
+      message: `确定删除选择的角色？`,
+      btn,
+      key: this.key,
+      duration: 3.5
+    });
+  }
+
+
   // 搜索
   handleSearch = (searchParams) => {
     const { pageParams } = this.state;
@@ -101,8 +143,18 @@ export default class RoleMgmt extends React.Component {
     });
   }
 
+
+  // 设置当前操作角色
+  handleSetCurrentRoleInfo = (roleInfo) => {
+    this.setState({ currentRoleInfo: roleInfo });
+  }
+
+  componentWillUnmount() {
+    notification.close(this.key);
+  }
+
   render() {
-    const { searchParams, pageParams, roleInfoList, roleInfoListTotalCount } = this.state;
+    const { searchParams, pageParams, roleInfoList, roleInfoListTotalCount, currentRoleInfo } = this.state;
     const { roleName } = searchParams;
 
     const searchBarFields = {
@@ -135,8 +187,16 @@ export default class RoleMgmt extends React.Component {
         title: '操作',
         render: (record) => (
           <Space size="small">
-            <a>查看成员</a>
-            <a>删除角色</a>
+            <a onClick={() => this.handleSetCurrentRoleInfo(record)}>查看成员</a>
+
+            <CustomPopconfirm
+              placement={'bottomRight'}
+              onConfirm={() => this.handleDeleteRole([record.roleUUID])}
+              confirmLoading={false}
+              title={'确定删除该角色？'}
+            >
+              <a>删除角色</a>
+            </CustomPopconfirm>
           </Space>
         ),
       },
@@ -145,6 +205,7 @@ export default class RoleMgmt extends React.Component {
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
         console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+        this.selectedRows = selectedRows;
       },
     };
 
@@ -155,7 +216,7 @@ export default class RoleMgmt extends React.Component {
 
           <Radio.Group onChange={this.handleSizeChange}>
             <Radio.Button onClick={() => this.handleToRoleEdit()}>创建角色</Radio.Button>
-            <Radio.Button>批量删除角色</Radio.Button>
+            <Radio.Button onClick={this.handleBatchDeleteRole}>批量删除角色</Radio.Button>
           </Radio.Group>
         </div>
 
@@ -170,6 +231,11 @@ export default class RoleMgmt extends React.Component {
           pageParams={pageParams}
           onChange={this.handleTablePageChange}
         />
+
+        {currentRoleInfo && <RoleRelatedStaffModal
+          roleInfo={currentRoleInfo}
+          onCancel={() => this.handleSetCurrentRoleInfo(null)}
+        />}
       </LayoutBox>
     );
   }

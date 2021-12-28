@@ -150,7 +150,6 @@ export default class RoleEidt extends React.Component {
         const { roleInfo = {} } = state;
         const { roleUUID } = roleInfo;
         const { menuUUIDList } = this.state;
-        console.log('value===', values)
         const res = await SaveRoleInfo({
             ...values,
             roleUUID,
