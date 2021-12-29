@@ -6,11 +6,11 @@ import { getBreadcrumb } from '@/utils/utils';
 export default class LayoutBox extends React.Component {
 
     render() {
-        const { children, location = {} } = this.props;
+        const { children, location = {}, ...props } = this.props;
         const { pathname } = location;
         const { breadcrumbList } = getBreadcrumb() || {};
 
-        return <div className={styles.layoutBox}>
+        return <div className={styles.layoutBox} {...props}>
             <BreadCrumb className={styles.breadcrumb} pathname={pathname} breadcrumbList={breadcrumbList} />
 
             {children}

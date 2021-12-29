@@ -10,15 +10,15 @@ import { Logout } from '@/services/staffServices';
 /**
  * 退出登录
  */
-const loginOut = async () => {
-  await Logout();
+const loginOut = async (staffUUID) => {
+  await Logout({ staffUUID });
   localStorage.removeItem('localStaffInfo')
   const { query = {}, search, pathname } = history.location;
   const { redirect } = query; // Note: There may be security issues, please note
 
-  if (window.location.pathname !== '/user/login/' && !redirect) {
+  if (window.location.pathname !== '/login/' && !redirect) {
     history.replace({
-      pathname: '/user/login/'
+      pathname: '/login/'
     });
   }
 };
@@ -35,7 +35,7 @@ const AvatarDropdown = () => {
         return;
       }
 
-      history.push(`/account/${key}`);
+      history.push(`/account/${key}/`);
     },
     [setInitialState],
   );
@@ -63,12 +63,12 @@ const AvatarDropdown = () => {
 
   const menuHeaderDropdown = (
     <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
-      <Menu.Item key="center">
+      <Menu.Item key="modifyProfile">
         <UserOutlined />
         修改资料
       </Menu.Item>
 
-      <Menu.Item key="settings">
+      <Menu.Item key="modifyPwd">
         <KeyOutlined />
         修改密码
       </Menu.Item>

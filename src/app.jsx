@@ -8,7 +8,7 @@ import { BookOutlined, LinkOutlined } from '@ant-design/icons';
 import WebView from '@/pages/WebView';
 import { getTreeData } from '@/utils/utils';
 
-const loginPath = '/user/login/';
+const loginPath = '/login/';
 
 /** 获取用户信息比较慢的时候会展示一个 loading */
 export const initialStateConfig = {
@@ -144,6 +144,7 @@ export const layout = ({ initialState }) => {
     menu: {
       locale: false,
       request: (params, defaultMenuDat) => {    // 要返回promise对象
+        console.log('defaultMenuDat--', defaultMenuDat)
         const staffUUID = initialState?.currentStaff?.staffUUID
         if (staffUUID) {
           return new Promise(async (resolve, reject) => {
@@ -172,7 +173,6 @@ export const layout = ({ initialState }) => {
                 menuList.push(menuInfo)
                 // }
               })
-              console.log('menuList---', menuList)
               resolve(menuList)
             })
           })
@@ -257,7 +257,17 @@ export function render(oldRender) {
         component: WebView,
       })
     })
-    extraRoutes = getTreeData(routesList);
+    const suffixRoutesList = [
+      {
+        path: '/',
+        redirect: routesList[0] && routesList[0].path
+      },
+      {
+        component: './404',
+      }
+    ]
+    const newRoutesList = routesList.concat(suffixRoutesList)
+    extraRoutes = getTreeData(newRoutesList);
     oldRender();
   })
 }

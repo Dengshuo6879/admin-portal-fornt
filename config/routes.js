@@ -1,25 +1,27 @@
 export default [
   {
-    path: '/user/',
+    path: '/login/',
+    name: '登录',
     layout: false,
+    component: './UserMgmt/Login',
+  },
+  {
+    path: '/account/',
     routes: [
       {
-        path: '/user/',
+        path: '/account/',
         routes: [
           {
-            name: '登录',
-            path: '/user/login/',
-            component: './UserMgmt/Login',
-          },
-          {
-            path: '/user/modifyProfile/',
+            path: '/account/modifyProfile/',
             name: '修改资料',
             component: './UserMgmt/ModifyProfile',
+            menuRender: false,
           },
           {
-            path: '/user/modifyPwd/',
+            path: '/account/modifyPwd/',
             name: '修改密码',
             component: './UserMgmt/ModifyPwd',
+            menuRender: false,
           },
         ],
       },
