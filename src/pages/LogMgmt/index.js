@@ -1,5 +1,6 @@
 import React from 'react';
 import { Tag } from 'antd';
+import { connect } from 'dva';
 import LayoutBox from '@/components/LayoutBox';
 import SearchBar from '@/components/SearchBar';
 import CustomTable from '@/components/CustomTable';
@@ -7,6 +8,9 @@ import { SearchLogInfoList, GetLogTypeInfoList } from '@/services/logServices';
 import { QueryStaffInfo } from '@/services/staffServices';
 import { cutoutTime } from '@/utils/utils';
 
+@connect(({ global }) => ({
+    globalLoading: global.globalLoading
+}))
 export default class LogMgmt extends React.Component {
     state = {
         searchParams: {
@@ -29,36 +33,43 @@ export default class LogMgmt extends React.Component {
     }
 
     // 搜索日志信息列表
-    handleSearchLogInfoList = async () => {
-        const res = await SearchLogInfoList();
-        // const { logInfoList, totalCount } = res;
+    handleSearchLogInfoList = (sec = 0.5) => {
+        this.props.dispatch({ type: 'global/setGlobalLoading', payload: true });
 
-        ////////////////////////////////////
-        const logInfoList = [
-            {
-                "logUUID": "c71c88d8-9066-4408-9135-a714c284335d",
-                "staffUUID": "c71c88d8-9066-4408-9135-a714c284335d",
-                "operationIP": "12.11.2.12",
-                "logTime": "2021-1-11 17:20:00.005000",
-                "logType": "modify_staff",
-                "logDesc": "修改资料"
-            },
-            {
-                "logUUID": "c71c88d8-9066-4408-9135-a714c2843353",
-                "staffUUID": "c71c88d8-9066-4408-9135-a714c284335d",
-                "operationIP": "12.11.2.12",
-                "logTime": "2021-1-11 17:20:00.005000",
-                "logType": "modify_pwd",
-                "logDesc": "修改密码"
-            }
-        ]
-        const totalCount = 2
-        ////////////////////////////////////
+        setTimeout(async () => {
+            const { searchParams, pageParams } = this.state;
+            const res = await SearchLogInfoList({ ...searchParams, ...pageParams });
+            // const { logInfoList, totalCount } = res;
 
-        logInfoList.map(logInfo => {
-            this.handleQueryStaffInfo(logInfo.staffUUID);
-        });
-        this.setState({ logInfoList, logInfoListTotalCount: totalCount });
+            ////////////////////////////////////
+            const logInfoList = [
+                {
+                    "logUUID": "c71c88d8-9066-4408-9135-a714c284335d",
+                    "staffUUID": "c71c88d8-9066-4408-9135-a714c284335d",
+                    "operationIP": "12.11.2.12",
+                    "logTime": "2021-1-11 17:20:00.005000",
+                    "logType": "modify_staff",
+                    "logDesc": "修改资料"
+                },
+                {
+                    "logUUID": "c71c88d8-9066-4408-9135-a714c2843353",
+                    "staffUUID": "c71c88d8-9066-4408-9135-a714c284335d",
+                    "operationIP": "12.11.2.12",
+                    "logTime": "2021-1-11 17:20:00.005000",
+                    "logType": "modify_pwd",
+                    "logDesc": "修改密码"
+                }
+            ]
+            const totalCount = 2
+            ////////////////////////////////////
+
+            logInfoList.map(logInfo => {
+                this.handleQueryStaffInfo(logInfo.staffUUID);
+            });
+            this.setState({ logInfoList, logInfoListTotalCount: totalCount });
+
+            this.props.dispatch({ type: 'global/setGlobalLoading', payload: false });
+        }, sec * 1000);
     }
 
     // 获取日志类型列表

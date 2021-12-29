@@ -1,6 +1,7 @@
 import React from 'react';
 import { Radio, Tag, Space, message } from 'antd';
 import { history } from 'umi';
+import { connect } from 'dva';
 import LayoutBox from '@/components/LayoutBox';
 import SearchBar from '@/components/SearchBar';
 import CustomPopconfirm from '@/components/CustomPopconfirm';
@@ -10,6 +11,9 @@ import RoleSelectModal from './role_select_modal';
 import { SearchStaffInfoList, DeleteStaff, LockStaff, UnlockStaff } from '@/services/staffServices';
 import { SaveStaffRelatedRole } from '@/services/roleServices';
 
+@connect(({ global }) => ({
+  globalLoading: global.globalLoading
+}))
 export default class StaffMgmt extends React.Component {
   state = {
     searchParams: {
@@ -32,10 +36,9 @@ export default class StaffMgmt extends React.Component {
 
   // 搜索成员信息列表
   handleSearchStaffInfoList = (sec = 0.5) => {
-    const { searchParams, pageParams } = this.state;
-
-
+    this.props.dispatch({ type: 'global/setGlobalLoading', payload: true });
     setTimeout(async () => {
+      const { searchParams, pageParams } = this.state;
       const res = await SearchStaffInfoList({ ...searchParams, ...pageParams });
       // const { totalCount = 0, staffInfoList = [] } = res;
 
@@ -83,8 +86,9 @@ export default class StaffMgmt extends React.Component {
       ]
       const totalCount = 2
       ////////////////////////////////////////
-
       this.setState({ staffInfoList, staffInfoListTotalCount: totalCount });
+
+      this.props.dispatch({ type: 'global/setGlobalLoading', payload: false });
     }, sec * 1000);
   }
 

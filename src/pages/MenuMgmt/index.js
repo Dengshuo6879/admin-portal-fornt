@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './index.less';
 import { Tree, Radio, Form, Input, Button, Space, notification } from 'antd';
+import { connect } from 'dva';
 import LayoutBox from '@/components/LayoutBox';
 import { SaveMenuInfo, SearchMenuInfoList, DeleteMenu } from '@/services/menuServices';
 import { formRules, getTreeData } from '@/utils/utils';
@@ -25,6 +26,9 @@ const formItemLayout = {
     },
 };
 
+@connect(({ global }) => ({
+    globalLoading: global.globalLoading
+}))
 export default class MenuMgmt extends React.Component {
     formRef = React.createRef();
     state = {
@@ -39,59 +43,65 @@ export default class MenuMgmt extends React.Component {
     }
 
     // 搜索菜单信息列表
-    handleSearchMenuInfoList = async () => {
-        const res = await SearchMenuInfoList();
-        // const { menuInfoList = [] } = res;
+    handleSearchMenuInfoList = (sec = 0.5) => {
+        this.props.dispatch({ type: 'global/setGlobalLoading', payload: true });
 
-        ////////////////////////////////////////////////
-        const menuInfoList = [
-            {
-                "menuUUID": "c71c88d8-9066-4408-9135-a714c284335d",
-                "parentMenuUUID": "",
-                "menuName": "我的数据集",
-                "menuCode": "dataset",
-                "menuUrl": "http://40.23.44.34:8000/dataset/",
-                "menuOrder": "001",
-                "createdTime": "2021-1-11 17: 20: 00.005000",
-                "lastModifiedTime": "2021-1-11 17: 20: 00.005000"
-            },
-            {
-                "menuUUID": "c71c88d8-9066-4408-9135-a714c2843354",
-                "parentMenuUUID": "",
-                "menuName": "我的模型",
-                "menuCode": "model",
-                "menuUrl": "http://40.23.44.34:8000/dataset/",
-                "menuOrder": "001",
-                "createdTime": "2021-1-11 17: 20: 00.005000",
-                "lastModifiedTime": "2021-1-11 17: 20: 00.005000"
-            },
-            {
-                "menuUUID": "c71c88d8-9066-4408-9135-a714c2843355",
-                "parentMenuUUID": "c71c88d8-9066-4408-9135-a714c2843354",
-                "menuName": "我的模型-子页面1",
-                "menuCode": "model",
-                "menuUrl": "http://40.23.44.34:8000/dataset/",
-                "menuOrder": "001",
-                "createdTime": "2021-1-11 17: 20: 00.005000",
-                "lastModifiedTime": "2021-1-11 17: 20: 00.005000"
-            },
-            {
-                "menuUUID": "c71c88d8-9066-4408-9135-a714c2843365",
-                "parentMenuUUID": "c71c88d8-9066-4408-9135-a714c2843355",
-                "menuName": "我的模型-子页面2",
-                "menuCode": "model",
-                "menuUrl": "http://40.23.44.34:8000/dataset/",
-                "menuOrder": "002",
-                "createdTime": "2021-1-11 17: 20: 00.005000",
-                "lastModifiedTime": "2021-1-11 17: 20: 00.005000"
-            }
-        ]
-        ////////////////////////////////////////////////
+        setTimeout(async () => {
+            const res = await SearchMenuInfoList();
+            // const { menuInfoList = [] } = res;
 
-        const treeMenuInfoList = getTreeData(menuInfoList)
-        this.setState({ menuInfoList: treeMenuInfoList, currentMenuInfo: treeMenuInfoList[0] || {} }, () => {
-            this.formRef.current.resetFields();
-        })
+            ////////////////////////////////////////////////
+            const menuInfoList = [
+                {
+                    "menuUUID": "c71c88d8-9066-4408-9135-a714c284335d",
+                    "parentMenuUUID": "",
+                    "menuName": "我的数据集",
+                    "menuCode": "dataset",
+                    "menuUrl": "http://40.23.44.34:8000/dataset/",
+                    "menuOrder": "001",
+                    "createdTime": "2021-1-11 17: 20: 00.005000",
+                    "lastModifiedTime": "2021-1-11 17: 20: 00.005000"
+                },
+                {
+                    "menuUUID": "c71c88d8-9066-4408-9135-a714c2843354",
+                    "parentMenuUUID": "",
+                    "menuName": "我的模型",
+                    "menuCode": "model",
+                    "menuUrl": "http://40.23.44.34:8000/dataset/",
+                    "menuOrder": "001",
+                    "createdTime": "2021-1-11 17: 20: 00.005000",
+                    "lastModifiedTime": "2021-1-11 17: 20: 00.005000"
+                },
+                {
+                    "menuUUID": "c71c88d8-9066-4408-9135-a714c2843355",
+                    "parentMenuUUID": "c71c88d8-9066-4408-9135-a714c2843354",
+                    "menuName": "我的模型-子页面1",
+                    "menuCode": "model",
+                    "menuUrl": "http://40.23.44.34:8000/dataset/",
+                    "menuOrder": "001",
+                    "createdTime": "2021-1-11 17: 20: 00.005000",
+                    "lastModifiedTime": "2021-1-11 17: 20: 00.005000"
+                },
+                {
+                    "menuUUID": "c71c88d8-9066-4408-9135-a714c2843365",
+                    "parentMenuUUID": "c71c88d8-9066-4408-9135-a714c2843355",
+                    "menuName": "我的模型-子页面2",
+                    "menuCode": "model",
+                    "menuUrl": "http://40.23.44.34:8000/dataset/",
+                    "menuOrder": "002",
+                    "createdTime": "2021-1-11 17: 20: 00.005000",
+                    "lastModifiedTime": "2021-1-11 17: 20: 00.005000"
+                }
+            ]
+            ////////////////////////////////////////////////
+
+            const treeMenuInfoList = getTreeData(menuInfoList)
+            this.setState({ menuInfoList: treeMenuInfoList, currentMenuInfo: treeMenuInfoList[0] || {} }, () => {
+                this.formRef.current.resetFields();
+            })
+
+            this.props.dispatch({ type: 'global/setGlobalLoading', payload: false });
+        }, sec * 1000);
     }
 
     // 保存菜单

@@ -1,6 +1,7 @@
 import React from 'react';
 import { message, Radio, Space, notification, Button } from 'antd';
 import { history } from 'umi';
+import { connect } from 'dva';
 import LayoutBox from '@/components/LayoutBox';
 import SearchBar from '@/components/SearchBar';
 import CustomPopconfirm from '@/components/CustomPopconfirm';
@@ -8,6 +9,9 @@ import CustomTable from '@/components/CustomTable';
 import RoleRelatedStaffModal from './role_related_staff_modal';
 import { SearchRoleInfoList, DeleteRole } from '@/services/roleServices';
 
+@connect(({ global }) => ({
+  globalLoading: global.globalLoading
+}))
 export default class RoleMgmt extends React.Component {
   state = {
     searchParams: {
@@ -26,9 +30,9 @@ export default class RoleMgmt extends React.Component {
 
   // 搜索角色信息列表
   handleSearchRoleInfoList = (sec = 0.5) => {
-    const { searchParams, pageParams } = this.state;
-
+    this.props.dispatch({ type: 'global/setGlobalLoading', payload: true });
     setTimeout(async () => {
+      const { searchParams, pageParams } = this.state;
       const res = await SearchRoleInfoList({ ...searchParams, ...pageParams });
       // const { roleInfoList, totalCount } = res;
       ////////////////////////////////////
@@ -54,7 +58,7 @@ export default class RoleMgmt extends React.Component {
       ////////////////////////////////////
 
       this.setState({ roleInfoList, roleInfoListTotalCount: totalCount });
-
+      this.props.dispatch({ type: 'global/setGlobalLoading', payload: false });
     }, sec * 1000);
   }
 
