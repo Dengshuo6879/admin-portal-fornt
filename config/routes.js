@@ -3,30 +3,24 @@ export default [
     path: '/login/',
     name: '登录',
     layout: false,
+    hideInMenu: true,
     component: './UserMgmt/Login',
   },
   {
     path: '/account/',
+    hideInMenu: true,
     routes: [
       {
-        path: '/account/',
-        routes: [
-          {
-            path: '/account/modifyProfile/',
-            name: '修改资料',
-            component: './UserMgmt/ModifyProfile',
-            menuRender: false,
-          },
-          {
-            path: '/account/modifyPwd/',
-            name: '修改密码',
-            component: './UserMgmt/ModifyPwd',
-            menuRender: false,
-          },
-        ],
+        path: '/account/modifyProfile/',
+        name: '修改资料',
+        component: './UserMgmt/ModifyProfile',
+        menuRender: false,
       },
       {
-        component: './404',
+        path: '/account/modifyPwd/',
+        name: '修改密码',
+        component: './UserMgmt/ModifyPwd',
+        menuRender: false,
       },
     ],
   },

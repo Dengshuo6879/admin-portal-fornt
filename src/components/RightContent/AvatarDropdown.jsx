@@ -6,6 +6,8 @@ import { stringify } from 'querystring';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 import { Logout } from '@/services/staffServices';
+import avatar_male from '@/assets/avatar_male.svg'
+import avatar_female from '@/assets/avatar_female.svg'
 
 /**
  * 退出登录
@@ -55,9 +57,10 @@ const AvatarDropdown = () => {
     return loading;
   }
 
-  const { currentStaff } = initialState;
+  const { currentStaff = {} } = initialState;
+  const { staffRealName, staffSex } = currentStaff;
 
-  if (!currentStaff || !currentStaff.staffRealName) {
+  if (!staffRealName) {
     return loading;
   }
 
@@ -84,8 +87,8 @@ const AvatarDropdown = () => {
   return (
     <HeaderDropdown overlay={menuHeaderDropdown}>
       <span className={`${styles.action} ${styles.account}`}>
-        <Avatar size="small" className={styles.avatar} src={currentStaff.avatar} alt="avatar" />
-        <span className={`${styles.name} anticon`}>{currentStaff.staffRealName}</span>
+        <Avatar size="small" className={styles.avatar} src={staffSex === 'female' ? avatar_female : avatar_male} alt="avatar" />
+        <span className={`${styles.name} anticon`}>{staffRealName ? `${staffRealName}, 你好` : ''}</span>
       </span>
     </HeaderDropdown>
   );

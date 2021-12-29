@@ -208,6 +208,7 @@ export function patchRoutes({ routes }) {
   routes[0].routes = newRoutesList
 }
 export function render(oldRender) {
+  // 拉取菜单信息列表
   SearchMenuInfoList().then(res => {
     const { menuInfoList = [
 
