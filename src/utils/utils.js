@@ -108,6 +108,27 @@ export function getTreeData(arr) {
   return treeData;
 }
 
+// 处理菜单树形结构数据
+export function getMenuTreeData(arr) {
+  const obj = {};
+  arr.map(item => {
+    obj[item.menuUUID] = item;
+  });
+
+  const treeData = [];
+  arr.map(child => {
+    const mapItem = obj[child.parentMenuUUID];
+    if (mapItem) {
+      delete mapItem.component; // 含有字节点的 删除component属性
+      delete mapItem.exact; // 含有字节点的 删除exact属性
+      (mapItem.children || (mapItem.children = [])).push(child);
+    } else {
+      treeData.push(child);
+    }
+  });
+  return treeData;
+}
+
 // 时间格式
 export const dateFormat = {
   'date': 'YYYY-MM-DD',

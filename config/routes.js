@@ -8,6 +8,7 @@ export default [
   },
   {
     path: '/account/',
+    name: '帐号管理',
     hideInMenu: true,
     routes: [
       {

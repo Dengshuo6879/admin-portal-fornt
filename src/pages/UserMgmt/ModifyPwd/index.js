@@ -72,7 +72,7 @@ const ModifyPwd = props => {
         if (res.errorMessage === 0) {
             message.success('密码修改成功');
             setTimeout(() => {
-                history.go(-1);
+                history.push('/');
             }, 1000);
         } else {
             message.error('密码修改失败');

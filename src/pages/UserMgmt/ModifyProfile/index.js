@@ -71,7 +71,7 @@ const ModifyProfile = props => {
         if (res.errorMessage === 0) {
             message.success('资料修改成功');
             setTimeout(() => {
-                history.go(-1);
+                history.push('/');
             }, 1000);
         } else {
             message.error('资料修改失败');

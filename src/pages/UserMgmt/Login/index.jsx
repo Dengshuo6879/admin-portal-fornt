@@ -11,6 +11,7 @@ import React, { useState } from 'react';
 import { ProFormCaptcha, ProFormCheckbox, ProFormText, LoginForm } from '@ant-design/pro-form';
 import { history, useModel } from 'umi';
 import { GetLoginAuthCode, LoginWithAuthCode } from '@/services/staffServices';
+import config from '@/../public/config';
 
 import styles from './index.less';
 
@@ -75,8 +76,8 @@ const Login = () => {
     <div className={styles.container}>
       <div className={styles.content}>
         <LoginForm
-          logo={<img alt="logo" src="/logo.svg" />}
-          title="零门槛自动化学习平台"
+          logo={<img alt="logo" src="/logo.png" />}
+          title={config.title}
           subTitle={<></>}
           onFinish={async (values) => {
             await handleSubmit(values);

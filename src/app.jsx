@@ -4,9 +4,9 @@ import RightContent from '@/components/RightContent';
 import { QueryStaffInfo, SearchStaffRelatedRoleUUIDList } from '@/services/staffServices';
 import { SearchMenuInfoList } from '@/services/menuServices';
 import { SearchRoleRelatedMenuUUIDList } from '@/services/roleServices';
-import { BookOutlined, LinkOutlined } from '@ant-design/icons';
 import WebView from '@/pages/WebView';
-import { getTreeData } from '@/utils/utils';
+import { getMenuTreeData } from '@/utils/utils';
+import config from '@/../public/config';
 
 const loginPath = '/login/';
 
@@ -114,7 +114,6 @@ export async function getInitialState() {
     return {
       fetchStaffInfo,
       currentStaff,
-      menuInfoList,
       settings: {},
     };
   }
@@ -129,6 +128,8 @@ export async function getInitialState() {
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout = ({ initialState }) => {
   return {
+    name: config.title,
+    logo: '/logo.png',
     rightContentRender: () => <RightContent />,
     disableContentMargin: false,
     waterMarkProps: {
@@ -141,10 +142,11 @@ export const layout = ({ initialState }) => {
         history.push(loginPath);
       }
     },
+
+    // 菜单权限配置
     menu: {
       locale: false,
       request: (params, defaultMenuDat) => {    // 要返回promise对象
-        console.log('defaultMenuDat--', defaultMenuDat)
         const staffUUID = initialState?.currentStaff?.staffUUID
         if (staffUUID) {
           return new Promise(async (resolve, reject) => {
@@ -164,47 +166,38 @@ export const layout = ({ initialState }) => {
                 menuUUIDList.map(menuUUID => menuUUIDObj[menuUUID] = true);
               })
               const menuUUIDList = Object.keys(menuUUIDObj);
-              console.log('menuUUIDList---', menuUUIDList)
 
               // 过滤出可展示的菜单
               const menuList = [];
               defaultMenuDat.map(menuInfo => {
-                // if (menuUUIDList.includes(menuInfo.menuUUID)) {
-                menuList.push(menuInfo)
-                // }
+                // if (menuUUIDList.includes(menuInfo.menuUUID) && menuInfo.name) {
+                if (menuInfo.name || menuInfo.menuUUID) {
+                  menuList.push(menuInfo)
+                }
               })
+              // 拼接404
+              menuList.push({
+                component: './404'
+              })
+
               resolve(menuList)
             })
           })
         }
       }
     },
+
     footerRender: false,
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
-    // 增加一个 loading 的状态
-    childrenRender: (children) => {
-      if (initialState.loading) return <PageLoading />;
-      return children;
-    },
     ...initialState?.settings,
   };
 };
 
-// 拉取路由
+// 从服务端拉取路由
 let extraRoutes = [];
 export function patchRoutes({ routes }) {
-  const suffixRoutesList = [
-    {
-      path: '/',
-      redirect: extraRoutes[0] && extraRoutes[0].path
-    },
-    {
-      component: './404',
-    }
-  ]
-
-  const newRoutesList = extraRoutes.concat(routes[0].routes, suffixRoutesList);
+  const newRoutesList = extraRoutes.concat(routes[0].routes); // 服务端拉取的路由拼接项目本地路由
   routes[0].routes = newRoutesList
 }
 export function render(oldRender) {
@@ -247,6 +240,7 @@ export function render(oldRender) {
 
     ] } = res;
 
+    // 处理路由配置
     const routesList = [];
     menuInfoList.map(menuInfo => {
       const { menuName, menuCode, menuUUID, parentMenuUUID } = menuInfo;
@@ -256,19 +250,20 @@ export function render(oldRender) {
         menuUUID,
         parentMenuUUID,
         component: WebView,
+        exact: true
       })
     })
-    const suffixRoutesList = [
-      {
-        path: '/',
-        redirect: routesList[0] && routesList[0].path
-      },
-      {
-        component: './404',
-      }
-    ]
-    const newRoutesList = routesList.concat(suffixRoutesList)
-    extraRoutes = getTreeData(newRoutesList);
+
+    // 添加重定向
+    routesList.push({
+      path: '/',
+      redirect: routesList[0] && routesList[0].path,
+      menuUUID: 'for_redirect',
+      exact: true
+    });
+
+    // 转化为路由树形结构
+    extraRoutes = getMenuTreeData(routesList);
     oldRender();
   })
 }
