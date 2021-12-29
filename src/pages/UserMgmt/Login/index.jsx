@@ -10,6 +10,7 @@ import { Alert, message, Tabs } from 'antd';
 import React, { useState } from 'react';
 import { ProFormCaptcha, ProFormCheckbox, ProFormText, LoginForm } from '@ant-design/pro-form';
 import { history, useModel } from 'umi';
+import { GetLoginAuthCode, LoginWithAuthCode } from '@/services/staffServices';
 
 import styles from './index.less';
 
@@ -28,62 +29,55 @@ const Login = () => {
   const [userLoginState, setUserLoginState] = useState({});
   const { initialState, setInitialState } = useModel('@@initialState');
 
-  const fetchUserInfo = async () => {
-    const userInfo = await initialState?.fetchUserInfo?.();
+  const fetchStaffInfo = async () => {
+    const userInfo = await initialState?.fetchStaffInfo?.();
 
     if (userInfo) {
-      await setInitialState((s) => ({ ...s, currentUser: userInfo }));
+      await setInitialState((s) => ({ ...s, currentStaff: userInfo }));
     }
   };
 
+
+
   const handleSubmit = async (values) => {
     try {
-      // 登录
-      // const msg = await login({ ...values, type });
+      // 获取登录授权码
+      const authCodeRes = await GetLoginAuthCode({ ...values });
+      const { loginAuthCode } = authCodeRes;
 
-      if (true) {
+      // 使用登录授权码登录
+      const loginRes = await LoginWithAuthCode({ loginAuthCode });
+      const { accessToken = 'accessToken', staffInfo = { staffUUID: '我是staffUUID' } } = loginRes;
+
+
+      if (accessToken) {
         message.success('登录成功！');
-
-        const staffInfo = {
-          "staffUUID": "c71c88d8-9066-4408-9135-a714c284335d",
-          "staffLoginName": "ds",
-          "staffRealName": "dengshuo",
-          "accessToken": "c71c88d8-9066-4408-9135-a714c28477d"
+        const lcoalStaffInfo = {
+          accessToken,
+          staffUUID: staffInfo.staffUUID
         }
-        localStorage.setItem('staffInfo', JSON.stringify(staffInfo))
+        localStorage.setItem('localStaffInfo', JSON.stringify(lcoalStaffInfo));
 
-        await fetchUserInfo();
-        /** 此方法会跳转到 redirect 参数所在的位置 */
+        await fetchStaffInfo();
+        setUserLoginState({ status: 'ok' });
 
-        if (!history) return;
-        const { query } = history.location;
-        const { redirect } = query;
-        history.push(redirect || '/');
-        return;
+        history.push('/');
+      } else {
+        setUserLoginState({ status: 'error' });
       }
-
-      console.log(msg); // 如果失败去设置用户错误信息
-
-      setUserLoginState(msg);
     } catch (error) {
       message.error('登录失败，请重试！');
     }
   };
 
-  const { status, type: loginType } = userLoginState;
+  const { status } = userLoginState;
   return (
     <div className={styles.container}>
-      <div className={styles.lang} data-lang>
-        {SelectLang && <SelectLang />}
-      </div>
       <div className={styles.content}>
         <LoginForm
           logo={<img alt="logo" src="/logo.svg" />}
-          title="自动化学习平台"
+          title="零门槛自动化学习平台"
           subTitle={<></>}
-          initialValues={{
-            autoLogin: true,
-          }}
           onFinish={async (values) => {
             await handleSubmit(values);
           }}
@@ -95,7 +89,7 @@ const Login = () => {
             />
           </Tabs>
 
-          {status === 'error' && loginType === 'account' && (
+          {status === 'error' && (
             <LoginMessage
               content={'帐户或密码错误'}
             />
@@ -108,11 +102,11 @@ const Login = () => {
                 size: 'large',
                 prefix: <UserOutlined className={styles.prefixIcon} />,
               }}
-              placeholder={'用户名: admin or user'}
+              placeholder={'用户名'}
               rules={[
                 {
                   required: true,
-                  message: '请输入用户名!',
+                  message: '请输入用户名',
                 },
               ]}
             />
@@ -122,29 +116,22 @@ const Login = () => {
                 size: 'large',
                 prefix: <LockOutlined className={styles.prefixIcon} />,
               }}
-              placeholder={'密码: ant.design'}
+              placeholder={'密码'}
               rules={[
                 {
                   required: true,
-                  message: '请输入密码！',
+                  message: '请输入密码',
                 },
               ]}
             />
           </>
 
-          {status === 'error' && loginType === 'mobile' && <LoginMessage content="验证码错误" />}
-          <div
-            style={{
-              height: 10,
-              // marginBottom: 10,
-            }}
-          >
+          <div style={{ height: 10 }}>
             {/* <ProFormCheckbox noStyle name="autoLogin">自动登录</ProFormCheckbox> */}
             {/* <a style={{ float: 'right' }}>忘记密码</a> */}
           </div>
         </LoginForm>
       </div>
-      {/* <Footer /> */}
     </div>
   );
 };

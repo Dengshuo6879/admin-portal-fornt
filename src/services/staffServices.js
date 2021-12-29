@@ -107,6 +107,14 @@ export async function UnlockStaff(body) {
   });
 }
 
+// 搜索成员关联的角色UUID列表
+export async function SearchStaffRelatedRoleUUIDList(body) {
+  return request(staffMgrBaseUrl + 'SearchStaffRelatedRoleUUIDList', {
+    method: 'POST',
+    data: body
+  });
+}
+
 // 获取当前登录成员信息
 export async function QueryLoginStaffInfo(options) {
   return request(staffMgrBaseUrl + 'QueryLoginStaffInfo', {

@@ -2,8 +2,8 @@
  * @see https://umijs.org/zh-CN/plugins/plugin-access
  * */
 export default function access(initialState) {
-  const { currentUser } = initialState || {};
+  const { currentStaff } = initialState || {};
   return {
-    canAdmin: currentUser && currentUser.access === 'admin',
+    canAdmin: currentStaff && currentStaff.access === 'admin',
   };
 }

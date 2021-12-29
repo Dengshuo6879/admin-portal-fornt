@@ -5,7 +5,7 @@ export default class WebView extends React.Component {
   state = {
     srcInfo: {
       '/dataset/': `http://192.168.1.33:8004/autoai-admin-front/dataSet/`,
-      '/model/': `http://192.168.1.33:8004/autoai-admin-front/model/`,
+      '/mymodel/model/': `http://192.168.1.33:8004/autoai-admin-front/model/`,
       '/device/': `http://192.168.1.33:8004/autoai-admin-front/device/`,
     },
 

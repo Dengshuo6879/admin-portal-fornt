@@ -5,13 +5,14 @@ import { history, useModel } from 'umi';
 import { stringify } from 'querystring';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
-// import { outLogin } from '@/services/ant-design-pro/api';
+import { Logout } from '@/services/staffServices';
 
 /**
  * 退出登录
  */
 const loginOut = async () => {
-  // await outLogin();
+  await Logout();
+  localStorage.removeItem('localStaffInfo')
   const { query = {}, search, pathname } = history.location;
   const { redirect } = query; // Note: There may be security issues, please note
 
@@ -29,8 +30,8 @@ const AvatarDropdown = () => {
       const { key } = event;
 
       if (key === 'logout') {
-        setInitialState((s) => ({ ...s, currentUser: undefined }));
-        loginOut();
+        setInitialState((s) => ({ ...s, currentStaff: undefined }));
+        loginOut(initialState?.currentStaff?.staffUUID);
         return;
       }
 
@@ -54,9 +55,9 @@ const AvatarDropdown = () => {
     return loading;
   }
 
-  const { currentUser } = initialState;
+  const { currentStaff } = initialState;
 
-  if (!currentUser || !currentUser.name) {
+  if (!currentStaff || !currentStaff.staffRealName) {
     return loading;
   }
 
@@ -83,8 +84,8 @@ const AvatarDropdown = () => {
   return (
     <HeaderDropdown overlay={menuHeaderDropdown}>
       <span className={`${styles.action} ${styles.account}`}>
-        <Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar" />
-        <span className={`${styles.name} anticon`}>{currentUser.name}</span>
+        <Avatar size="small" className={styles.avatar} src={currentStaff.avatar} alt="avatar" />
+        <span className={`${styles.name} anticon`}>{currentStaff.staffRealName}</span>
       </span>
     </HeaderDropdown>
   );

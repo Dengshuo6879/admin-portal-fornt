@@ -30,7 +30,7 @@ export default [
   },
 
   {
-    path: '/systemMgmt',
+    path: '/systemMgmt/',
     name: '系统管理',
     routes: [
       {
